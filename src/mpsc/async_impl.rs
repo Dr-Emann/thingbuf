@@ -936,16 +936,26 @@ feature! {
         /// [`split`]: StaticChannel::split
         #[must_use]
         pub const fn new() -> Self {
-            Self {
-                core: ChannelCore::new(CAPACITY),
-                slots: Slot::make_static_array::<CAPACITY>(),
-                is_split: AtomicBool::new(false),
-                recycle: recycling::DefaultRecycle::new(),
-            }
+            Self::with_recycle(recycling::DefaultRecycle::new())
         }
     }
 
     impl<T, R, const CAPACITY: usize> StaticChannel<T, CAPACITY, R> {
+        /// Constructs a new statically-allocated, asynchronous bounded MPSC channel
+        /// with the provided [recycling policy].
+        ///
+        /// See [`Self::new`] for more information.
+        ///
+        /// [recycling policy]: crate::recycling::Recycle
+        #[must_use]
+        pub const fn with_recycle(recycle: R) -> Self {
+            Self {
+                core: ChannelCore::new(CAPACITY),
+                slots: Slot::make_static_array::<CAPACITY>(),
+                is_split: AtomicBool::new(false),
+                recycle,
+            }
+        }
         /// Split a [`StaticChannel`] into a [`StaticSender`]/[`StaticReceiver`]
         /// pair.
         ///
