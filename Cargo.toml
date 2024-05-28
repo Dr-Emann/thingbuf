@@ -53,3 +53,6 @@ loom = { git = "https://github.com/tokio-rs/loom", rev = "a93bf2390e0fcfdb7c5899
 [package.metadata.docs.rs]
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
+
+[lints.rust]
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(loom)', 'cfg(thingbuf_trace)'] }
